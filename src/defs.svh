@@ -2,7 +2,7 @@
 `define _SIMPLE_ANN_DEFS_H
 
 typedef enum logic [1:0] {
-    INVALID, LEARN, FREEZE
+    INVALID, LEARN, FREEZE_PARAMETER, FREEZE_ALL
 } neuron_learn_state_t;
 
 // 32 bits
