@@ -16,6 +16,7 @@ module tb_nums;
     initial begin
         test_add_real(real_from_int(12),real_from_int(13));
         test_sub_real(real_from_int(12),real_from_int(13));
+        test_sub_real(real_from_int(12),real_from_real(13.87));
     end
 
 endmodule

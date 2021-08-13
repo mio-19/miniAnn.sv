@@ -14,6 +14,9 @@ typedef struct packed {
 function real_t real_from_int(int i);
     real_from_int = {i[15:0],16'b0};
 endfunction
+function real_t real_from_real(real x);
+    real_from_real = x * (1<<16);
+endfunction
 function real_t real_add(real_t x, real_t y);
     real_add = x+y;
 endfunction
