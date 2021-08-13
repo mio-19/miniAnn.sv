@@ -1,10 +1,6 @@
 `ifndef _SIMPLE_ANN_DEFS_H
 `define _SIMPLE_ANN_DEFS_H
 
-typedef enum {
-    INIT, LEARN, LOAD, RUN
-} neuron_state_t;
-
 // 32 bits
 typedef struct packed {
     bit sign;
@@ -50,11 +46,23 @@ endfunction
 function zero2one_t zero2one_from_real(real x);
     zero2one_from_real = x * (1<<16);
 endfunction
+/* verilator lint_off WIDTH */
 function real zero2one_to_real(zero2one_t x);
     zero2one_to_real = ($unsigned(x)*1.0)/(1<<16);
 endfunction
 function frac_t zero2one_to_frac(zero2one_t x);
     zero2one_to_frac = {16'b0, x};
+endfunction
+
+typedef struct packed {
+    zero2one_t i;
+    bit sign;
+} zero2one_signed_t;
+function zero2one_signed_t zero2one_signed_from_zero2one(zero2one_t i);
+    zero2one_signed_from_zero2one = {i, 1'b0};
+endfunction
+function zero2one_t zero2one_signed_abs_zero2one(zero2one_signed_t x);
+    zero2one_signed_abs_zero2one = x.i;
 endfunction
 
 `endif
