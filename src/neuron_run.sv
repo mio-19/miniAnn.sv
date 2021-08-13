@@ -12,10 +12,11 @@ module neuron_run #(
     // internal
     output frac_t sum,
     output bit sum_too_big,
-    output bit sum_too_small
+    output bit sum_too_small,
+    output frac_t activation_space
 );
 
-    frac_t activation_space = frac_sub(activation_max, activation_min);
+    assign activation_space = frac_sub(activation_max, activation_min);
 
     //frac_t sum;
     always_comb begin
