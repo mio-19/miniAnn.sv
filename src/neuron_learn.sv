@@ -71,6 +71,9 @@ module neuron_learn #(
                         weights[i] <= frac_sub(weights[i], out_delta_signed_times(weights[i]));
                         expected_in[i] <= zero2one_sub_overflow_as_min(in[i], zero2one_mul(out_delta_abs, unsigned_frac_to_zero2one_overflow_as_max(frac_div(weights[i], activation_space))));
                     end
+                    // minimize activation_space
+                    // activation_min <= ...
+                    // activation_max <= ...
                 end
             end
         end
