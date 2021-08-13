@@ -15,7 +15,10 @@ function real_t real_from_int(int i);
     real_from_int = {i[15:0],16'b0};
 endfunction
 function real_t real_add(real_t x, real_t y);
-    real_add = x+y;
+    int x_i = x;
+    int y_i = y;
+    $display(x_i,y_i,x_i+y_i);
+    real_add = x_i+y_i;
 endfunction
 function real_t real_sub(real_t x, real_t y);
     real_sub = x-y;
