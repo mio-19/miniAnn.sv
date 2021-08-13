@@ -36,7 +36,20 @@ function frac_t frac_mul(frac_t x, frac_t y);
     frac_mul = frac_mul_aux1(frac_mul_aux(x,y));
 endfunction
 function frac_t frac_div(frac_t x, frac_t y);
-    // todo
+    frac_div = frac_negative(x)==frac_negative(y) ? frac_abs_div(x, y) : frac_opposite(frac_abs_div(x, y));
+endfunction
+function frac_t frac_unsigned_div_helper_aux(bit [`frac_t_size*2-1:0] x);
+    // will it overflow?
+    frac_unsigned_div_helper_aux = {1'b0, x[`frac_t_size-2:0]};
+endfunction
+function frac_t frac_unsigned_div_helper(bit [`frac_t_size*2-1:0] x, bit [`frac_t_size*2-1:0] y);
+    frac_unsigned_div_helper = frac_unsigned_div_helper_aux($unsigned(x) / $unsigned(y));
+endfunction
+function frac_t frac_abs_div(frac_t x, frac_t y);
+    frac_abs_div = frac_unsigned_div(frac_abs(x), frac_abs(y));
+endfunction
+function frac_t frac_unsigned_div(frac_t x, frac_t y);
+    frac_unsigned_div = frac_unsigned_div_helper({x, `BITS'b0, `BITS'b0}, {`BITS'b0, `BITS'b0, y});
 endfunction
 function bit frac_bigger(frac_t x, frac_t y);
     frac_bigger = x > y;
@@ -52,6 +65,9 @@ function bit frac_postive(frac_t x);
 endfunction
 function frac_t frac_opposite(frac_t x);
     frac_opposite = -x;
+endfunction
+function frac_t frac_abs(frac_t x);
+    frac_abs = frac_negative(x) ? frac_opposite(x) : x;
 endfunction
 
 typedef struct packed {
