@@ -11,7 +11,7 @@ module tb_nums;
     endtask
 
     initial begin
-        test_add_real(real_from_i(12),real_from_i(13));
+        test_add_real(real_from_int(12),real_from_int(13));
     end
 
 endmodule

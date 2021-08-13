@@ -5,32 +5,25 @@ typedef enum {
     INIT, LEARN, LOAD, RUN
 } neuron_state_t;
 
-// 64 bits
+// 32 bits
 typedef struct packed {
     bit sign;
-    bit [31:0] i;
-    bit [30:0] frac;
+    bit [30:16] i;
+    bit [15:0] frac;
 } real_t;
-function real_t real_from_i(bit [31:0] i);
-    longint unsigned a = {1'b0, i[31:0], 31'b0};
-    real_from_i = a;
+function real_t real_from_int(int i);
+    real_from_int = {i[15:0],16'b0};
 endfunction
 function real_t real_add(real_t x, real_t y);
-    longint unsigned x_i = x;
-    longint unsigned y_i = y;
-    longint unsigned r = x_i+y_i;
-    real_add = r;
+    real_add = x+y;
 endfunction
 function real_t real_sub(real_t x, real_t y);
-    longint unsigned x_i = x;
-    longint unsigned y_i = y;
-    longint unsigned r = x_i-x_i;
-    real_sub = r;
+    real_sub = x-y;
 endfunction
 // behaviour is undefined if it overflows
 function real_t real_mul(real_t x, real_t y);
-    bit [126:0] unsigned_result = $unsigned({x.i,x.frac})*$unsigned({y.i,y.frac}); // 127 bits
-    real_mul = {x.sign!=y.sign, unsigned_result[93:31]};
+    bit [62:0] unsigned_result = $unsigned({x.i,x.frac})*$unsigned({y.i,y.frac}); // 63 bits
+    real_mul = {x.sign!=y.sign, unsigned_result[46:16]};
 endfunction
 
 typedef struct packed {
@@ -40,7 +33,7 @@ function zero2one_t zero2one_add(zero2one_t x, zero2one_t y);
     zero2one_add = x+y;
 endfunction
 function real_t zero2one_to_real(zero2one_t x);
-    zero2one_to_real = {1'b1, 32'b0, x[63:33]};
+    zero2one_to_real = {16'b0, x[63:48]};
 endfunction
 
 `endif
