@@ -2,9 +2,7 @@
 module tb_nums;
 
     function real real2real(real_t x);
-        int x_i = x;
-        real v = x_i / (2^16);
-        real2real = v;
+        real2real = ($signed(x)*1.0)/(1<<16);
     endfunction
     task test_add_real(real_t a, real_t b);
         real_t c = real_add(a, b);
