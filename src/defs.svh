@@ -12,19 +12,19 @@ typedef struct packed {
     bit [30:0] frac;
 } real_t;
 function real_t real_from_i(bit [31:0] i);
-    longint a = {1'b0, i[31:0], 31'b0};
+    longint unsigned a = {1'b0, i[31:0], 31'b0};
     real_from_i = a;
 endfunction
 function real_t real_add(real_t x, real_t y);
-    longint x_i = x;
-    longint y_i = y;
-    longint r = x_i+y_i;
+    longint unsigned x_i = x;
+    longint unsigned y_i = y;
+    longint unsigned r = x_i+y_i;
     real_add = r;
 endfunction
 function real_t real_sub(real_t x, real_t y);
-    longint x_i = x;
-    longint y_i = y;
-    longint r = x_i-x_i;
+    longint unsigned x_i = x;
+    longint unsigned y_i = y;
+    longint unsigned r = x_i-x_i;
     real_sub = r;
 endfunction
 // behaviour is undefined if it overflows
