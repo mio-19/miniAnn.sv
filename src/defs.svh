@@ -1,10 +1,6 @@
 `ifndef _SIMPLE_ANN_DEFS_H
 `define _SIMPLE_ANN_DEFS_H
 
-typedef enum logic [1:0] {
-    INVALID, LEARN, FREEZE_PARAMETER, FREEZE_ALL
-} neuron_learn_state_t;
-
 // 32 bits
 typedef struct packed {
     bit sign;

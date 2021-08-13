@@ -2,7 +2,8 @@
 module neuron_learn #(
     parameter N = 16
 ) (
-    input neuron_learn_state_t state,
+    input bit valid,
+    input bit learn, // 0 - freeze parameters, 1 - learn
     input zero2one_t in [N-1:0],
     output zero2one_t out,
 
