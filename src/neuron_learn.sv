@@ -14,4 +14,10 @@ module neuron_learn #(
     input zero2one_t expected_out,
     output zero2one_t expected_in [N-1:0]
 );
+
+    neuron_run #(.N(N)) neuron_run_instance(.in(in), .out(out), .weights(weights), .activation_max(activation_max), .activation_min(activation_min));
+
+    always @* begin
+    end
+
 endmodule
