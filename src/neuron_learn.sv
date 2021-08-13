@@ -18,7 +18,10 @@ module neuron_learn #(
     output zero2one_t expected_in [N-1:0]
 );
 
-    neuron_run #(.N(N)) neuron_run_instance(.in(in), .out(out), .weights(weights), .activation_max(activation_max), .activation_min(activation_min));
+    frac_t sum;
+    bit sum_too_big;
+
+    neuron_run #(.N(N)) neuron_run_instance(.in(in), .out(out), .weights(weights), .activation_max(activation_max), .activation_min(activation_min), .sum(sum), .sum_too_big(sum_too_big));
 
     /* verilator lint_off UNOPTFLAT */
     bit [N-1:0] random_v0;
@@ -36,7 +39,8 @@ module neuron_learn #(
             if (random_v0[1]) activation_min = activation_min ^ random_v1;
             random_v1 = random_v0 - random_v1;
             random_v2 = random_v0 + random_v1 - random_v2;
-        end else begin
+        end else if(learn) begin
+            if (frac_lesser(activation_max, activation_min)) {activation_max, activation_min} = {activation_min, activation_max};
         end
     end
 
