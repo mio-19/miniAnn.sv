@@ -3,6 +3,7 @@
 
 `define BITS 16
 
+`define frac_t_size `BITS*2
 typedef struct packed {
     bit sign;
     bit [`BITS-2:0] i;

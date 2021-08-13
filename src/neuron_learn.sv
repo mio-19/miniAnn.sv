@@ -17,7 +17,24 @@ module neuron_learn #(
 
     neuron_run #(.N(N)) neuron_run_instance(.in(in), .out(out), .weights(weights), .activation_max(activation_max), .activation_min(activation_min));
 
-    always @* begin
+    bit [N-1:0] random_v0;
+    bit [$clog2(`frac_t_size)-1:0] random_v1;
+    bit [$clog2(N)-1:0] random_v2;
+    always @(valid, learn, in, expected_out) begin
+        if (!valid) begin
+            // randomly generate some values
+            random_v1[random_v0] <= random_v1[random_v0] ^ random_v0[~random_v2];
+            foreach (random_v0[i]) begin
+                random_v0[i] <= random_v0[i] ^ (random_v0[random_v2^i] ? weights[random_v2+i][random_v1-i] : in[random_v2-i][~random_v1+i]);
+            end
+            random_v2 <= random_v2 ^ ~random_v0;
+            foreach (weights[i]) begin
+                weights[i] <= weights[i+random_v0] ^ {in[i+random_v1], out + random_v2};
+            end
+            activation_max <= activation_max + (random_v2 ^ random_v1);
+            activation_min <= activation_min - random_v0;
+        end else begin
+        end
     end
 
 endmodule
