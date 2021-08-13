@@ -4,7 +4,7 @@ module tb_nums;
     function real real2real(real_t x);
         real2real = ($signed(x)*1.0)/(1<<16);
     endfunction
-    task test_add_real(real_t a, real_t b);
+    task automatic test_add_real(real_t a, real_t b);
         real_t c = real_add(a, b);
         $display("%f + %f = %f", real2real(a), real2real(b), real2real(c));
     endtask
