@@ -1,28 +1,25 @@
 `include "defs.svh"
 module tb_nums;
 
-    function real real2real(real_t x);
-        real2real = ($signed(x)*1.0)/(1<<16);
-    endfunction
-    task automatic test_add_real(real_t a, real_t b);
-        real_t c = real_add(a, b);
-        $display("%f + %f = %f", real2real(a), real2real(b), real2real(c));
+    task automatic test_add_frac(frac_t a, frac_t b);
+        frac_t c = frac_add(a, b);
+        $display("%f + %f = %f", frac2real(a), frac2real(b), frac2real(c));
     endtask
-    task automatic test_sub_real(real_t a, real_t b);
-        real_t c = real_sub(a, b);
-        $display("%f - %f = %f", real2real(a), real2real(b), real2real(c));
+    task automatic test_sub_frac(frac_t a, frac_t b);
+        frac_t c = frac_sub(a, b);
+        $display("%f - %f = %f", frac2real(a), frac2real(b), frac2real(c));
     endtask
-    task automatic real_mul_real(real_t a, real_t b);
-        real_t c = real_mul(a, b);
-        $display("%f * %f = %f", real2real(a), real2real(b), real2real(c));
+    task automatic frac_mul_frac(frac_t a, frac_t b);
+        frac_t c = frac_mul(a, b);
+        $display("%f * %f = %f", frac2real(a), frac2real(b), frac2real(c));
     endtask
 
     initial begin
-        test_add_real(real_from_int(12),real_from_int(13));
-        test_sub_real(real_from_int(12),real_from_int(13));
-        test_sub_real(real_from_int(12),real_from_real(13.87));
-        real_mul_real(real_from_real(1.3),real_from_real(1.5));
-        real_mul_real(real_from_real(2.5),real_from_real(2.5));
+        test_add_frac(frac_from_int(12),frac_from_int(13));
+        test_sub_frac(frac_from_int(12),frac_from_int(13));
+        test_sub_frac(frac_from_int(12),frac_from_real(13.87));
+        frac_mul_frac(frac_from_real(1.3),frac_from_real(1.5));
+        frac_mul_frac(frac_from_real(2.5),frac_from_real(2.5));
     end
 
 endmodule
