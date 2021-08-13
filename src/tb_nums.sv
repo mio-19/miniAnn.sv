@@ -11,7 +11,7 @@ module tb_nums;
     endtask
     task automatic test_mul_frac(frac_t a, frac_t b);
         frac_t c = frac_mul(a, b);
-        $display("%f (%b) * %f (%b) = %f (%b)", frac2real(a), a, frac2real(b), b, frac2real(c), c);
+        $display("%f (%b %d) * %f (%b %d) = %f (%b %d)", frac2real(a), a, a, frac2real(b), b, b, frac2real(c), c, c);
     endtask
 
     initial begin
