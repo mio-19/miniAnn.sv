@@ -2,7 +2,7 @@
 module neuron_learn #(
     parameter N = 16
 ) (
-    input bit _trigger,
+    input bit clock,
     input bit valid,
     input bit learn, // 0 - freeze parameters, 1 - learn
     input zero2one_t in [N-1:0],
@@ -42,34 +42,34 @@ module neuron_learn #(
     bit [N-1:0] random_v0;
     frac_t random_v1;
     bit [N-1:0] random_v2;
-    always @(_trigger, valid, learn, in, expected_out) begin
+    always_ff @(posedge clock) begin
         if (!valid) begin
             // randomly generate some values
             foreach (weights[i]) begin
-                if (random_v0[i]) weights[i] = weights[i] - random_v1;
-                if (random_v2[i]) random_v0[i] = random_v0[i] ^ (^in[i]);
-                if (random_v0[i] ^ random_v2[i]) random_v0[i] = random_v0[i] ^ (~^ expected_out);
+                if (random_v0[i]) weights[i] <= weights[i] - random_v1;
+                if (random_v2[i]) random_v0[i] <= random_v0[i] ^ (^in[i]);
+                else if (random_v0[i] ^ random_v2[i]) random_v0[i] <= random_v0[i] ^ (~^ expected_out);
             end
-            if (random_v0[0]) activation_max = activation_max + random_v1;
-            if (random_v0[1]) activation_min = activation_min ^ random_v1;
-            random_v1 = random_v0 - random_v1;
-            random_v2 = random_v0 + random_v1 - random_v2;
+            if (random_v0[0]) activation_max <= activation_max + random_v1;
+            if (random_v0[1]) activation_min <= activation_min ^ random_v1;
+            random_v1 <= random_v0 - random_v1;
+            random_v2 <= random_v0 + random_v1 - random_v2;
         end else if(learn) begin
-            if (frac_lesser(activation_max, activation_min)) {activation_max, activation_min} = {activation_min, activation_max};
+            if (frac_lesser(activation_max, activation_min)) {activation_max, activation_min} <= {activation_min, activation_max};
             else begin
                 if (sum_too_small && out_delta_postive) begin
-                    activation_min = frac_sub(activation_min, out_delta_abs_times(frac_sub(activation_min, sum)));
+                    activation_min <= frac_sub(activation_min, out_delta_abs_times(frac_sub(activation_min, sum)));
                 end
                 if (sum_too_big && out_delta_negative) begin
-                    activation_max = frac_add(activation_max, out_delta_abs_times(frac_sub(sum, activation_max)));
+                    activation_max <= frac_add(activation_max, out_delta_abs_times(frac_sub(sum, activation_max)));
                 end
                 foreach (expected_in[i]) begin
                     if (frac_postive(weights[i])==out_delta_postive) begin
-                        expected_in[i] = zero2one_add(in[i], zero2one_mul(out_delta_abs, unsigned_frac_to_zero2one_overflow_as_max(frac_div(weights[i], activation_space))));
-                        weights[i] = frac_add(weights[i], out_delta_signed_times(weights[i]));
+                        expected_in[i] <= zero2one_add(in[i], zero2one_mul(out_delta_abs, unsigned_frac_to_zero2one_overflow_as_max(frac_div(weights[i], activation_space))));
+                        weights[i] <= frac_add(weights[i], out_delta_signed_times(weights[i]));
                     end else begin
-                        weights[i] = frac_sub(weights[i], out_delta_signed_times(weights[i]));
-                        expected_in[i] = zero2one_sub_overflow_as_min(in[i], zero2one_mul(out_delta_abs, unsigned_frac_to_zero2one_overflow_as_max(frac_div(weights[i], activation_space))));
+                        weights[i] <= frac_sub(weights[i], out_delta_signed_times(weights[i]));
+                        expected_in[i] <= zero2one_sub_overflow_as_min(in[i], zero2one_mul(out_delta_abs, unsigned_frac_to_zero2one_overflow_as_max(frac_div(weights[i], activation_space))));
                     end
                 end
             end
