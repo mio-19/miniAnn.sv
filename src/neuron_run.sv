@@ -11,7 +11,8 @@ module neuron_run #(
 
     // internal
     output frac_t sum,
-    output bit sum_too_big
+    output bit sum_too_big,
+    output bit sum_too_small
 );
 
     frac_t activation_space = frac_sub(activation_max, activation_min);
@@ -25,11 +26,16 @@ module neuron_run #(
     always_comb begin
         if (frac_lesser(sum, activation_min)) begin
             out = `zero2one_min;
+            sum_too_big = 1'b0;
+            sum_too_small = 1'b1;
         end else if (frac_bigger(sum, activation_max)) begin
             out = `zero2one_max;
             sum_too_big = 1'b1;
+            sum_too_small = 1'b0;
         end else begin
             out = unsigned_frac_to_zero2one_overflow_as_max(frac_div(sum - activation_min, activation_space));
+            sum_too_big = 1'b0;
+            sum_too_small = 1'b0;
         end
     end
 

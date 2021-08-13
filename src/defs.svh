@@ -83,5 +83,17 @@ endfunction
 function zero2one_t zero2one_signed_abs_zero2one(zero2one_signed_t x);
     zero2one_signed_abs_zero2one = x.i;
 endfunction
+function zero2one_signed_t zero2one_sub_signed(zero2one_t x, zero2one_t y);
+    // todo
+endfunction
+function bit zero2one_signed_negative(zero2one_signed_t x);
+    zero2one_signed_negative = x.sign;
+endfunction
+function bit zero2one_signed_postive(zero2one_signed_t x);
+    zero2one_signed_postive = !x.sign;
+endfunction
+function frac_t zero2one_signed_mul_frac(zero2one_signed_t x, frac_t y);
+    // todo
+endfunction
 
 `endif
