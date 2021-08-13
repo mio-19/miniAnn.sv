@@ -15,6 +15,7 @@ module tb_nums;
     endtask
 
     initial begin
+        $display("frac");
         test_add_frac(frac_from_int(12),frac_from_int(13));
         test_sub_frac(frac_from_int(12),frac_from_int(13));
         test_sub_frac(frac_from_int(12),frac_from_real(13.87));
@@ -30,6 +31,7 @@ module tb_nums;
     endtask
 
     initial begin
+        $display("zero2one");
         test_zero2one_add(0.1,0.2);
     end
 
