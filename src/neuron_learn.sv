@@ -24,11 +24,19 @@ module neuron_learn #(
     bit sum_too_small;
     neuron_run #(.N(N)) neuron_run_instance(.in(in), .out(out), .weights(weights), .activation_max(activation_max), .activation_min(activation_min), .sum(sum), .sum_too_big(sum_too_big), .sum_too_small(sum_too_small));
 
-    zero2one_signed_t out_delta = zero2one_sub_signed(expected_out, out);
-    bit out_delta_postive = zero2one_signed_postive(out_delta);
+    zero2one_signed_t out_delta_signed = zero2one_sub_signed(expected_out, out);
+    bit out_delta_postive = zero2one_signed_postive(out_delta_signed);
+    bit out_delta_negative = zero2one_signed_negative(out_delta_signed);
+    zero2one_t out_delta_abs = zero2one_signed_abs_zero2one(out_delta_signed);
 
-    function frac_t out_delta_times(frac_t x);
-        out_delta_times = zero2one_signed_mul_frac(out_delta, x);
+    /*
+    function frac_t out_delta_signed_times(frac_t x);
+        out_delta_signed_times = zero2one_signed_mul_frac(out_delta_signed, x);
+    endfunction
+    */
+
+    function frac_t out_delta_abs_times(frac_t x);
+        out_delta_abs_times = zero2one_mul_frac(out_delta_abs, x);
     endfunction
 
     /* verilator lint_off UNOPTFLAT */
@@ -50,8 +58,13 @@ module neuron_learn #(
         end else if(learn) begin
             if (frac_lesser(activation_max, activation_min)) {activation_max, activation_min} = {activation_min, activation_max};
             else begin
-                if(sum_too_small && out_delta_postive) begin
-                    activation_min = frac_sub(activation_min, out_delta_times(frac_sub(activation_min, sum)));
+                if (sum_too_small && out_delta_postive) begin
+                    activation_min = frac_sub(activation_min, out_delta_abs_times(frac_sub(activation_min, sum)));
+                end
+                if (sum_too_big && out_delta_negative) begin
+                    activation_max = frac_add(activation_max, out_delta_abs_times(frac_sub(sum, activation_max)));
+                end
+                foreach (expected_in[i]) begin
                 end
             end
         end

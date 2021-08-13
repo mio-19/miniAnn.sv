@@ -44,6 +44,9 @@ endfunction
 function bit frac_lesser(frac_t x, frac_t y);
     frac_lesser = x < y;
 endfunction
+function bit frac_negative(frac_t x);
+    frac_negative = x[`BITS*2-1];
+endfunction
 
 typedef struct packed {
     bit [`BITS-1:0] fraction;
