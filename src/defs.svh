@@ -1,21 +1,22 @@
 `ifndef _SIMPLE_ANN_DEFS_H
 `define _SIMPLE_ANN_DEFS_H
 
-// 32 bits
+`define BITS 16
+
 typedef struct packed {
     bit sign;
-    bit [30:16] i;
-    bit [15:0] frac;
+    bit [`BITS-2:0] i;
+    bit [`BITS-1:0] frac;
 } frac_t;
 function frac_t frac_from_int(int i);
-    frac_from_int = {i[15:0],16'b0};
+    frac_from_int = {i[`BITS-1:0],`BITS'b0};
 endfunction
 /* verilator lint_off REALCVT */
 function frac_t frac_from_real(real x);
-    frac_from_real = x * (1<<16);
+    frac_from_real = x * (1<<`BITS);
 endfunction
 function real frac2real(frac_t x);
-    frac2real = ($signed(x)*1.0)/(1<<16);
+    frac2real = ($signed(x)*1.0)/(1<<`BITS);
 endfunction
 function frac_t frac_add(frac_t x, frac_t y);
     frac_add = x+y;
@@ -24,11 +25,11 @@ function frac_t frac_sub(frac_t x, frac_t y);
     frac_sub = x-y;
 endfunction
 // behaviour is undefined if it overflows
-function bit [64:0] frac_mul_aux(bit [31:0] x, bit [31:0] y);
+function bit [`BITS*4:0] frac_mul_aux(bit [`BITS*2-1:0] x, bit [`BITS*2-1:0] y);
     frac_mul_aux  = $signed(x)*$signed(y);
 endfunction
-function frac_t frac_mul_aux1(bit [64:0] result);
-    frac_mul_aux1 = {result[64], result[46:16]};
+function frac_t frac_mul_aux1(bit [`BITS*4:0] result);
+    frac_mul_aux1 = {result[`BITS*4], result[`BITS*3-2:`BITS]};
 endfunction
 function frac_t frac_mul(frac_t x, frac_t y);
     frac_mul = frac_mul_aux1(frac_mul_aux(x,y));
@@ -44,31 +45,31 @@ function bit frac_lesser(frac_t x, frac_t y);
 endfunction
 
 typedef struct packed {
-    bit [15:0] fraction;
+    bit [`BITS-1:0] fraction;
 } zero2one_t;
-`define zero2one_max 16'hffff
-`define zero2one_min 16'b0
-function zero2one_t zero2one_tzero2one_add_aux(bit [16:0] r);
-    zero2one_tzero2one_add_aux =  r[16] ? `zero2one_max : r[15:0];
+`define zero2one_max `BITS'hffff
+`define zero2one_min `BITS'b0
+function zero2one_t zero2one_tzero2one_add_aux(bit [`BITS:0] r);
+    zero2one_tzero2one_add_aux =  r[`BITS] ? `zero2one_max : r[`BITS-1:0];
 endfunction
 function zero2one_t zero2one_add(zero2one_t x, zero2one_t y);
     zero2one_add = zero2one_tzero2one_add_aux($unsigned(x)+$unsigned(y));
 endfunction
 function zero2one_t zero2one_from_real(real x);
-    zero2one_from_real = x * (1<<16);
+    zero2one_from_real = x * (1<<`BITS);
 endfunction
 /* verilator lint_off WIDTH */
 function real zero2one_to_real(zero2one_t x);
-    zero2one_to_real = ($unsigned(x)*1.0)/(1<<16);
+    zero2one_to_real = ($unsigned(x)*1.0)/(1<<`BITS);
 endfunction
 function frac_t zero2one_to_frac(zero2one_t x);
-    zero2one_to_frac = {16'b0, x};
+    zero2one_to_frac = {`BITS'b0, x};
 endfunction
 function frac_t zero2one_mul_frac(zero2one_t x, frac_t y);
     zero2one_mul_frac = frac_mul(zero2one_to_frac(x), y);
 endfunction
 function zero2one_t unsigned_frac_to_zero2one_overflow_as_max(frac_t x);
-    unsigned_frac_to_zero2one_overflow_as_max = (x[31:16] == 0) ? x[15:0] : `zero2one_max;
+    unsigned_frac_to_zero2one_overflow_as_max = (x[`BITS*2-1:`BITS] == 0) ? x[`BITS-1:0] : `zero2one_max;
 endfunction
 
 typedef struct packed {
