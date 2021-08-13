@@ -9,7 +9,7 @@ module tb_nums;
         frac_t c = frac_sub(a, b);
         $display("%f - %f = %f", frac2real(a), frac2real(b), frac2real(c));
     endtask
-    task automatic frac_mul_frac(frac_t a, frac_t b);
+    task automatic test_mul_frac(frac_t a, frac_t b);
         frac_t c = frac_mul(a, b);
         $display("%f * %f = %f", frac2real(a), frac2real(b), frac2real(c));
     endtask
@@ -18,8 +18,19 @@ module tb_nums;
         test_add_frac(frac_from_int(12),frac_from_int(13));
         test_sub_frac(frac_from_int(12),frac_from_int(13));
         test_sub_frac(frac_from_int(12),frac_from_real(13.87));
-        frac_mul_frac(frac_from_real(1.3),frac_from_real(1.5));
-        frac_mul_frac(frac_from_real(2.5),frac_from_real(2.5));
+        test_mul_frac(frac_from_real(1.3),frac_from_real(1.5));
+        test_mul_frac(frac_from_real(2.5),frac_from_real(2.5));
+    end
+
+    task automatic test_zero2one_add(real a, real b);
+        zero2one_t x = zero2one_from_real(a);
+        zero2one_t y = zero2one_from_real(b);
+        zero2one_t c = zero2one_add(x,y);
+        $display("%f + %f = %f", zero2one_to_real(x),zero2one_to_real(y),zero2one_to_real(c));
+    endtask
+
+    initial begin
+        test_zero2one_add(0.1,0.2);
     end
 
 endmodule

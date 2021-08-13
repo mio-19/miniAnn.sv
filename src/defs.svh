@@ -39,13 +39,19 @@ function frac_t frac_mul(frac_t x, frac_t y);
 endfunction
 
 typedef struct packed {
-    bit [63:0] fraction;
+    bit [31:0] fraction;
 } zero2one_t;
 function zero2one_t zero2one_add(zero2one_t x, zero2one_t y);
     zero2one_add = x+y;
 endfunction
-function frac_t zero2one_to_real(zero2one_t x);
-    zero2one_to_real = {16'b0, x[63:48]};
+function zero2one_t zero2one_from_real(real x);
+    zero2one_from_real = x * (1<<32);
+endfunction
+function real zero2one_to_real(zero2one_t x);
+    zero2one_to_real = ($unsigned(x)*1.0)/(1<<32);
+endfunction
+function frac_t zero2one_to_frac(zero2one_t x);
+    zero2one_to_frac = {16'b0, x[31:16]};
 endfunction
 
 `endif
