@@ -18,6 +18,9 @@ endfunction
 function real_t real_from_real(real x);
     real_from_real = x * (1<<16);
 endfunction
+function real real2real(real_t x);
+    real2real = ($signed(x)*1.0)/(1<<16);
+endfunction
 function real_t real_add(real_t x, real_t y);
     real_add = x+y;
 endfunction
