@@ -29,11 +29,19 @@ module tb_nums;
         zero2one_t c = zero2one_add(x,y);
         $display("%f + %f = %f", zero2one_to_real(x),zero2one_to_real(y),zero2one_to_real(c));
     endtask
+    task automatic test_zero2one_frac(real a);
+        zero2one_t x = zero2one_from_real(a);
+        frac_t x_f = zero2one_to_frac(x);
+        $display("%f %f", zero2one_to_real(x),frac2real(x_f));
+    endtask
 
     initial begin
         $display("zero2one");
         test_zero2one_add(0.1,0.2);
         test_zero2one_add(0.1,0.9);
+        test_zero2one_frac(0.1);
+        test_zero2one_frac(0.9);
+        test_zero2one_frac(0.875);
     end
 
 endmodule
