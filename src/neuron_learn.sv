@@ -23,17 +23,19 @@ module neuron_learn #(
     /* verilator lint_off UNOPTFLAT */
     bit [N-1:0] random_v0;
     frac_t random_v1;
+    bit [N-1:0] random_v2;
     always @(valid, learn, in, expected_out) begin
         if (!valid) begin
             // randomly generate some values
             foreach (weights[i]) begin
                 if (random_v0[i]) weights[i] = weights[i] - random_v1;
-                if (in[i][0]) random_v0[i] = random_v0[i] ^ in[i][1];
-                if (in[i][1]) random_v0[i] = random_v0[i] ^ (~^ expected_out);
+                if (random_v2[i]) random_v0[i] = random_v0[i] ^ (^in[i]);
+                if (random_v0[i] ^ random_v2[i]) random_v0[i] = random_v0[i] ^ (~^ expected_out);
             end
             if (random_v0[0]) activation_max = activation_max + random_v1;
             if (random_v0[1]) activation_min = activation_min ^ random_v1;
-            random_v1 = random_v1 + random_v0;
+            random_v1 = random_v0 - random_v1;
+            random_v2 = random_v0 + random_v1 - random_v2;
         end else begin
         end
     end
