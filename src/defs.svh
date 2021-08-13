@@ -29,7 +29,7 @@ function frac_t frac_sub(frac_t x, frac_t y);
 endfunction
 // behaviour is undefined if it overflows
 function bit [64:0] frac_mul_aux(bit [31:0] x, bit [31:0] y);
-    frac_mul_aux  = $signed(x)*$signed(x);
+    frac_mul_aux  = $signed(x)*$signed(y);
 endfunction
 function frac_t frac_mul_aux1(bit [64:0] result);
     frac_mul_aux1 = {result[64], result[46:16]};
