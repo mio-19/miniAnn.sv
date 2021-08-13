@@ -33,6 +33,7 @@ module tb_nums;
     initial begin
         $display("zero2one");
         test_zero2one_add(0.1,0.2);
+        test_zero2one_add(0.1,0.9);
     end
 
 endmodule

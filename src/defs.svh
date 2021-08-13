@@ -41,8 +41,11 @@ endfunction
 typedef struct packed {
     bit [15:0] fraction;
 } zero2one_t;
+function zero2one_t zero2one_tzero2one_add_aux(bit [16:0] r);
+    zero2one_tzero2one_add_aux =  r[16] ? 16'hffff : r[15:0];
+endfunction
 function zero2one_t zero2one_add(zero2one_t x, zero2one_t y);
-    zero2one_add = x+y;
+    zero2one_add = zero2one_tzero2one_add_aux($unsigned(x)+$unsigned(y));
 endfunction
 function zero2one_t zero2one_from_real(real x);
     zero2one_from_real = x * (1<<16);
