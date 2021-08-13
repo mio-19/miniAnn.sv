@@ -62,6 +62,9 @@ endfunction
 function zero2one_t zero2one_add(zero2one_t x, zero2one_t y);
     zero2one_add = zero2one_tzero2one_add_aux($unsigned(x)+$unsigned(y));
 endfunction
+function zero2one_t zero2one_sub_overflow_as_min(zero2one_t x, zero2one_t y);
+    // todo
+endfunction
 function zero2one_t zero2one_from_real(real x);
     zero2one_from_real = x * (1<<`BITS);
 endfunction
@@ -77,6 +80,9 @@ function frac_t zero2one_mul_frac(zero2one_t x, frac_t y);
 endfunction
 function zero2one_t unsigned_frac_to_zero2one_overflow_as_max(frac_t x);
     unsigned_frac_to_zero2one_overflow_as_max = (x[`BITS*2-1:`BITS] == 0) ? x[`BITS-1:0] : `zero2one_max;
+endfunction
+function zero2one_t zero2one_mul(zero2one_t x, zero2one_t y);
+    // todo
 endfunction
 
 typedef struct packed {

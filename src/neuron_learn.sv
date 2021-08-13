@@ -65,11 +65,11 @@ module neuron_learn #(
                 end
                 foreach (expected_in[i]) begin
                     if (frac_postive(weights[i])==out_delta_postive) begin
-                        //expected_in[i] = zero2one_add(in[i], out_delta_abs_times(weights[i]));
+                        expected_in[i] = zero2one_add(in[i], zero2one_mul(out_delta_abs, unsigned_frac_to_zero2one_overflow_as_max(frac_div(weights[i], activation_space))));
                         weights[i] = frac_add(weights[i], out_delta_signed_times(weights[i]));
                     end else begin
                         weights[i] = frac_sub(weights[i], out_delta_signed_times(weights[i]));
-                        //expected_in[i] = zero2one_sub(in[i], out_delta_abs_times(weights[i]));
+                        expected_in[i] = zero2one_sub_overflow_as_min(in[i], zero2one_mul(out_delta_abs, unsigned_frac_to_zero2one_overflow_as_max(frac_div(weights[i], activation_space))));
                     end
                 end
             end
