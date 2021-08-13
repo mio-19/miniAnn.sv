@@ -24,9 +24,14 @@ function real_t real_sub(real_t x, real_t y);
     real_sub = x-y;
 endfunction
 // behaviour is undefined if it overflows
+function bit [64:0] real_mul_aux(bit [31:0] x, bit [31:0] y);
+    real_mul_aux  = $signed(x)*$signed(x);
+endfunction
+function real_t real_mul_aux1(bit [64:0] result);
+    real_mul_aux1 = {result[64], result[46:16]};
+endfunction
 function real_t real_mul(real_t x, real_t y);
-    bit [64:0] unsigned_result = $signed(x)*$signed(x); // 65 bits
-    real_mul = {unsigned_result[64], unsigned_result[46:16]};
+    real_mul = real_mul_aux1(real_mul_aux(x,y));
 endfunction
 
 typedef struct packed {

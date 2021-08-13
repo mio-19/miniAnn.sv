@@ -22,6 +22,7 @@ module tb_nums;
         test_sub_real(real_from_int(12),real_from_int(13));
         test_sub_real(real_from_int(12),real_from_real(13.87));
         real_mul_real(real_from_real(1.3),real_from_real(1.5));
+        real_mul_real(real_from_real(2.5),real_from_real(2.5));
     end
 
 endmodule
