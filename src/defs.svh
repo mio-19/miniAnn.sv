@@ -66,7 +66,7 @@ function zero2one_t zero2one_add(zero2one_t x, zero2one_t y);
     zero2one_add = zero2one_tzero2one_add_aux($unsigned(x)+$unsigned(y));
 endfunction
 function zero2one_t zero2one_sub_overflow_as_min(zero2one_t x, zero2one_t y);
-    // todo
+    zero2one_sub_overflow_as_min = x > y ? x-y : `zero2one_min;
 endfunction
 function zero2one_t zero2one_from_real(real x);
     zero2one_from_real = x * (1<<`BITS);
