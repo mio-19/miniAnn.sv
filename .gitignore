@@ -1,2 +1,4 @@
 # verilator
 obj_dir
+# iverilog
+a.out
