@@ -37,12 +37,23 @@ endfunction
 function frac_t frac_mul(frac_t x, frac_t y);
     frac_mul = frac_mul_aux1(frac_mul_aux(x,y));
 endfunction
+function frac_t frac_div(frac_t x, frac_t y);
+    // todo
+endfunction
+function bit frac_bigger(frac_t x, frac_t y);
+    frac_bigger = x > y;
+endfunction
+function bit frac_lesser(frac_t x, frac_t y);
+    frac_lesser = x < y;
+endfunction
 
 typedef struct packed {
     bit [15:0] fraction;
 } zero2one_t;
+`define zero2one_max 16'hffff
+`define zero2one_min 16'b0
 function zero2one_t zero2one_tzero2one_add_aux(bit [16:0] r);
-    zero2one_tzero2one_add_aux =  r[16] ? 16'hffff : r[15:0];
+    zero2one_tzero2one_add_aux =  r[16] ? `zero2one_max : r[15:0];
 endfunction
 function zero2one_t zero2one_add(zero2one_t x, zero2one_t y);
     zero2one_add = zero2one_tzero2one_add_aux($unsigned(x)+$unsigned(y));
@@ -56,6 +67,12 @@ function real zero2one_to_real(zero2one_t x);
 endfunction
 function frac_t zero2one_to_frac(zero2one_t x);
     zero2one_to_frac = {16'b0, x};
+endfunction
+function frac_t zero2one_mul_frac(zero2one_t x, frac_t y);
+    zero2one_mul_frac = frac_mul(zero2one_to_frac(x), y);
+endfunction
+function zero2one_t unsigned_frac_to_zero2one_overflow_as_max(frac_t x);
+    unsigned_frac_to_zero2one_overflow_as_max = (x[31:16] == 0) ? x[15:0] : `zero2one_max;
 endfunction
 
 typedef struct packed {
