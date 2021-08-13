@@ -27,7 +27,7 @@ function frac_t frac_sub(frac_t x, frac_t y);
 endfunction
 // behaviour is undefined if it overflows
 function bit [`BITS*4:0] frac_mul_aux(bit [`BITS*2-1:0] x, bit [`BITS*2-1:0] y);
-    frac_mul_aux  = $signed(x)*$signed(y);
+    frac_mul_aux = $signed(x)*$signed(y);
 endfunction
 function frac_t frac_mul_aux1(bit [`BITS*4:0] result);
     frac_mul_aux1 = {result[`BITS*4], result[`BITS*3-2:`BITS]};
@@ -49,6 +49,9 @@ function bit frac_negative(frac_t x);
 endfunction
 function bit frac_postive(frac_t x);
     frac_postive = !x[`BITS*2-1];
+endfunction
+function frac_t frac_opposite(frac_t x);
+    frac_opposite = -x;
 endfunction
 
 typedef struct packed {
@@ -81,8 +84,11 @@ endfunction
 function zero2one_t unsigned_frac_to_zero2one_overflow_as_max(frac_t x);
     unsigned_frac_to_zero2one_overflow_as_max = (x[`BITS*2-1:`BITS] == 0) ? x[`BITS-1:0] : `zero2one_max;
 endfunction
+function zero2one_t zero2one_mul_aux(bit [`BITS*2:0] result);
+    zero2one_mul_aux = result[`BITS*2-1:`BITS];
+endfunction
 function zero2one_t zero2one_mul(zero2one_t x, zero2one_t y);
-    // todo
+    zero2one_mul = zero2one_mul_aux($unsigned(x)*$unsigned(y));
 endfunction
 
 typedef struct packed {
@@ -96,7 +102,7 @@ function zero2one_t zero2one_signed_abs_zero2one(zero2one_signed_t x);
     zero2one_signed_abs_zero2one = x.i;
 endfunction
 function zero2one_signed_t zero2one_sub_signed(zero2one_t x, zero2one_t y);
-    // todo
+    zero2one_sub_signed = x>y ? {x-y, 1'b0} : {y-x, 1'b1};
 endfunction
 function bit zero2one_signed_negative(zero2one_signed_t x);
     zero2one_signed_negative = x.sign;
@@ -104,8 +110,14 @@ endfunction
 function bit zero2one_signed_postive(zero2one_signed_t x);
     zero2one_signed_postive = !x.sign;
 endfunction
+function frac_t zero2one_abs_to_frac(zero2one_signed_t x);
+    zero2one_abs_to_frac = zero2one_to_frac(x.i);
+endfunction
+function frac_t zero2one_signed_to_frac(zero2one_signed_t x);
+    zero2one_signed_to_frac = x.sign ? frac_opposite(zero2one_abs_to_frac(x)) : zero2one_abs_to_frac(x);
+endfunction
 function frac_t zero2one_signed_mul_frac(zero2one_signed_t x, frac_t y);
-    // todo
+    zero2one_signed_mul_frac = frac_mul(zero2one_signed_to_frac(x), y);
 endfunction
 
 `endif
