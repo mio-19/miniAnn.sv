@@ -38,8 +38,8 @@ endfunction
 function frac_t frac_div(frac_t x, frac_t y);
     frac_div = frac_negative(x)==frac_negative(y) ? frac_abs_div(x, y) : frac_opposite(frac_abs_div(x, y));
 endfunction
+// behaviour is undefined if it overflows
 function frac_t frac_unsigned_div_helper_aux(bit [`frac_t_size*2-1:0] x);
-    // will it overflow?
     frac_unsigned_div_helper_aux = {1'b0, x[`frac_t_size-2:0]};
 endfunction
 function frac_t frac_unsigned_div_helper(bit [`frac_t_size*2-1:0] x, bit [`frac_t_size*2-1:0] y);
@@ -69,6 +69,10 @@ endfunction
 function frac_t frac_abs(frac_t x);
     frac_abs = frac_negative(x) ? frac_opposite(x) : x;
 endfunction
+function frac_t frac_unsigned_div_int(frac_t x, int y);
+    frac_unsigned_div_int = $unsigned(x) / y;
+endfunction
+`define frac_zero {`BITS'b0, `BITS'b0}
 
 typedef struct packed {
     bit [`BITS-1:0] fraction;

@@ -18,10 +18,9 @@ module neuron_run #(
 
     assign activation_space = frac_sub(activation_max, activation_min);
 
-    //frac_t sum;
     always_comb begin
-        sum = 0;
-        foreach (in[i]) sum += zero2one_mul_frac(in[i], weights[i]);
+        sum = `frac_zero;
+        foreach (in[i]) sum = frac_add(sum, zero2one_mul_frac(in[i], weights[i]));
     end
 
     always_comb begin
