@@ -3,7 +3,7 @@ set -e
 
 part1() {
 sed "s|@|$1|g" << 'EOF'
-    neuron_learn #(.N(N)) instance@ (.clock(clock), .valid(valid), .learn(learn), .in(in), .out(out[@]), .weights(weights[@]), .activation_max(activation_max[@]), .activation_min(activation_min[@]), .expected_out(expected_out[@]), .expected_in(unavg_expected_in[@]));
+    neuron_learn #(.N(N)) instance@ (.clock(clock), .valid(valid), .learn(learn), .in(in), .out(out[@]), .weights(weights[@]), .activation_upper_bound(activation_upper_bound[@]), .activation_lower_bound(activation_lower_bound[@]), .expected_out(expected_out[@]), .expected_in(unavg_expected_in[@]));
 EOF
 }
 
@@ -20,9 +20,9 @@ module neuron_learn_layer* #(
     input unit_t in [N-1:0],
     output unit_t out [*-1:0],
 
-    output frac_t weights [*-1:0][N-1:0],
-    output frac_t activation_max [*-1:0],
-    output frac_t activation_min [*-1:0],
+    output unit_signed_t weights [*-1:0][N-1:0],
+    output unit_signed_t activation_upper_bound [*-1:0],
+    output unit_signed_t activation_lower_bound [*-1:0],
 
     input unit_t expected_out [*-1:0],
     output unit_t expected_in [N-1:0]
