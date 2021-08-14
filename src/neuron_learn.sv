@@ -42,7 +42,7 @@ module neuron_learn #(
     bit [N-1:0] random_v0;
     frac_t random_v1;
     bit [N-1:0] random_v2;
-    always_ff @(posedge clock) begin
+    always_ff @(posedge clock, negedge valid) begin
         if (!valid) begin
             // randomly generate some values
             foreach (weights[i]) begin
