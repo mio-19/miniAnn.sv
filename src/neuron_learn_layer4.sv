@@ -1,3 +1,4 @@
+// generated, do not edit
 `include "defs.svh"
 module neuron_learn_layer4 #(
     parameter N = 16

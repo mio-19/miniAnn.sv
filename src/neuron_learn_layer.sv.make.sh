@@ -9,6 +9,7 @@ EOF
 
 mod() {
 sed "s|*|$1|g" << 'EOF'
+// generated, do not edit
 `include "defs.svh"
 module neuron_learn_layer* #(
     parameter N = 16
