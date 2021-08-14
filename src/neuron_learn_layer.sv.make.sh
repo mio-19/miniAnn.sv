@@ -17,19 +17,19 @@ module neuron_learn_layer* #(
     input bit clock,
     input bit valid,
     input bit learn,
-    input zero2one_t in [N-1:0],
-    output zero2one_t out [*-1:0],
+    input unit_t in [N-1:0],
+    output unit_t out [*-1:0],
 
     output frac_t weights [*-1:0][N-1:0],
     output frac_t activation_max [*-1:0],
     output frac_t activation_min [*-1:0],
 
-    input zero2one_t expected_out [*-1:0],
-    output zero2one_t expected_in [N-1:0]
+    input unit_t expected_out [*-1:0],
+    output unit_t expected_in [N-1:0]
 );
 
-    zero2one_t unavg_expected_in [*-1:0][N-1:0];
-    zero2one_arr_average #(.N(*), .LEN(N)) avg (.in(unavg_expected_in), .out(expected_in));
+    unit_t unavg_expected_in [*-1:0][N-1:0];
+    unit_arr_average #(.N(*), .LEN(N)) avg (.in(unavg_expected_in), .out(expected_in));
 
 EOF
 local i=0
