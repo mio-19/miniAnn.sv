@@ -1,3 +1,4 @@
+/* verilator lint_off MULTITOP */
 `ifndef _SIMPLE_ANN_DEFS_H
 `define _SIMPLE_ANN_DEFS_H
 
