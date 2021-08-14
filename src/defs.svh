@@ -73,6 +73,9 @@ endfunction
 function frac_t frac_unsigned_div_int(frac_t x, int y);
     frac_unsigned_div_int = $unsigned(x) / y;
 endfunction
+function frac_t frac_signed_div_int(frac_t x, int y);
+    frac_signed_div_int = $signed(x) / y;
+endfunction
 `define frac_zero {`BITS'b0, `BITS'b0}
 
 typedef struct packed {
@@ -116,6 +119,8 @@ typedef struct packed {
     zero2one_t i;
     bit sign;
 } zero2one_signed_t;
+`define zero2one_signed_min {`zero2one_max, 1'b1}
+`define zero2one_signed_max {`zero2one_max, 1'b0}
 function zero2one_signed_t zero2one_signed_from_zero2one(zero2one_t i);
     zero2one_signed_from_zero2one = {i, 1'b0};
 endfunction
@@ -137,8 +142,14 @@ endfunction
 function frac_t zero2one_signed_to_frac(zero2one_signed_t x);
     zero2one_signed_to_frac = x.sign ? frac_opposite(zero2one_abs_to_frac(x)) : zero2one_abs_to_frac(x);
 endfunction
+function zero2one_signed_t frac_to_zero2one_signed_overflow_to_max_min(frac_t x);
+    frac_to_zero2one_signed_overflow_to_max_min = (x[`BITS*2-1:`BITS] == 0) ? {x[`BITS-1:0], 1'b0} : (x[`BITS*2-1:`BITS] == ~`BITS'0) ? {-x[`BITS-1:0], 1'b1} : x[`BITS*2-1] ? `zero2one_signed_min : `zero2one_signed_max;
+endfunction
 function frac_t zero2one_signed_mul_frac(zero2one_signed_t x, frac_t y);
     zero2one_signed_mul_frac = frac_mul(zero2one_signed_to_frac(x), y);
+endfunction
+function zero2one_t zero2one_signed_scale(zero2one_signed_t x, zero2one_signed_t base, zero2one_t space);
+    zero2one_signed_scale = frac_to_zero2one_signed_overflow_to_max_min(frac_div(frac_sub(zero2one_signed_to_frac(x), zero2one_signed_to_frac(min)), zero2one_to_frac(space)));
 endfunction
 
 `endif
