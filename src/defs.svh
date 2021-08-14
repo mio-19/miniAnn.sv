@@ -53,10 +53,10 @@ function frac_t frac_unsigned_div(frac_t x, frac_t y);
     frac_unsigned_div = frac_unsigned_div_helper({x, `BITS'b0, `BITS'b0}, {`BITS'b0, `BITS'b0, y});
 endfunction
 function bit frac_bigger(frac_t x, frac_t y);
-    frac_bigger = x > y;
+    frac_bigger = $signed(x) > $signed(y);
 endfunction
 function bit frac_lesser(frac_t x, frac_t y);
-    frac_lesser = x < y;
+    frac_lesser = $signed(x) < $signed(y);
 endfunction
 function bit frac_negative(frac_t x);
     frac_negative = x[`BITS*2-1];
@@ -179,8 +179,17 @@ endfunction
 function unit_signed_t frac_to_unit_signed_overflow_to_max_min(frac_t x);
     frac_to_unit_signed_overflow_to_max_min = (x[`BITS*2-1:`BITS] == 0) ? {1'b0, x[`BITS-1:0]} : (x[`BITS*2-1:`BITS] == ~`BITS'0) ? {1'b1, x[`BITS-1:0]} : x[`BITS*2-1] ? `unit_signed_min : `unit_signed_max;
 endfunction
+function unit_signed_t unit_signed_sub(unit_signed_t x, unit_signed_t y);
+    unit_signed_sub = x-y;
+endfunction
 function unit_t unit_signed_scale(unit_signed_t x, unit_signed_t base, unit_t space);
-    unit_signed_scale = frac_to_unit_signed_overflow_to_max_min(frac_div(frac_sub(unit_signed_to_frac(x), unit_signed_to_frac(min)), unit_to_frac(space)));
+    unit_signed_scale = frac_to_unit_signed_overflow_to_max_min(frac_div(frac_sub(unit_signed_to_frac(x), unit_signed_to_frac(base)), unit_to_frac(space)));
+endfunction
+function bit unit_signed_lesser(unit_signed_t x, unit_signed_t y);
+    unit_signed_lesser = $signed(x) < $signed(y);
+endfunction
+function bit unit_signed_bigger(unit_signed_t x, unit_signed_t y);
+    unit_signed_bigger = $signed(x) > $signed(y);
 endfunction
 
 

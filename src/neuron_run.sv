@@ -16,7 +16,7 @@ module neuron_run #(
     output unit_t activation_space
 );
 
-    assign activation_space = unit_signed_abs_unit(unit_signed_sub(activation_max, activation_min));
+    assign activation_space = unit_signed_abs_unit(unit_signed_sub(activation_upper_bound, activation_lower_bound));
 
     assign average = frac_to_unit_signed_overflow_to_max_min(frac_signed_div_int(sum, N));
     frac_t sum;
