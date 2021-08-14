@@ -2,6 +2,4 @@
 set -e
 cd "$(dirname "$0")"
 cd src
-for f in *.sv; do
-  verilator --cc "$f"
-done
+echo *.sv | xargs --max-args=1 --max-procs="$(nproc)" verilator --cc
