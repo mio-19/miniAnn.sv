@@ -44,6 +44,7 @@ module neuron_learn #(
     bit [N-1:0] random_v2;
     always_ff @(posedge clock, negedge valid) begin
         if (!valid) begin
+            /* verilator lint_off WIDTH */
             // randomly generate some values
             foreach (weights[i]) begin
                 if (random_v0[i]) weights[i] <= weights[i] - random_v1;
