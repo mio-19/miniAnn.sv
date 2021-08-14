@@ -115,6 +115,7 @@ function unit_t unit_mul(unit_t x, unit_t y);
     unit_mul = unit_mul_aux($unsigned(x)*$unsigned(y));
 endfunction
 
+/*
 typedef struct packed {
     unit_t i;
     bit sign;
@@ -151,5 +152,36 @@ endfunction
 function unit_t unit_signed_scale(unit_signed_t x, unit_signed_t base, unit_t space);
     unit_signed_scale = frac_to_unit_signed_overflow_to_max_min(frac_div(frac_sub(unit_signed_to_frac(x), unit_signed_to_frac(min)), unit_to_frac(space)));
 endfunction
+*/
+
+// `BITS+1 bits
+typedef struct packed {
+    bit sign;
+    bit [`BITS-1:0] fraction;
+} unit_signed_t;
+`define unit_signed_min {1'b1, `BITS'b0}
+`define unit_signed_max {1'b0, ~`BITS'b0}
+function unit_signed_t unit_signed_from_unit(unit_t i);
+    unit_signed_from_unit = {1'b0, i};
+endfunction
+function bit unit_signed_negative(unit_signed_t x);
+    unit_signed_negative = x.sign;
+endfunction
+function bit unit_signed_postive(unit_signed_t x);
+    unit_signed_postive = !x.sign;
+endfunction
+function unit_t unit_signed_abs_unit(unit_signed_t x);
+    unit_signed_abs_unit = x.sign ? -x.fraction : x.fraction;
+endfunction
+function frac_t unit_signed_to_frac(unit_signed_t x);
+    unit_signed_to_frac = $signed(x);
+endfunction
+function unit_signed_t frac_to_unit_signed_overflow_to_max_min(frac_t x);
+    frac_to_unit_signed_overflow_to_max_min = (x[`BITS*2-1:`BITS] == 0) ? {1'b0, x[`BITS-1:0]} : (x[`BITS*2-1:`BITS] == ~`BITS'0) ? {1'b1, x[`BITS-1:0]} : x[`BITS*2-1] ? `unit_signed_min : `unit_signed_max;
+endfunction
+function unit_t unit_signed_scale(unit_signed_t x, unit_signed_t base, unit_t space);
+    unit_signed_scale = frac_to_unit_signed_overflow_to_max_min(frac_div(frac_sub(unit_signed_to_frac(x), unit_signed_to_frac(min)), unit_to_frac(space)));
+endfunction
+
 
 `endif
