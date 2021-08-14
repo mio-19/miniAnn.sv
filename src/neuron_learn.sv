@@ -30,14 +30,6 @@ module neuron_learn #(
     bit out_delta_negative = unit_signed_negative(out_delta_signed);
     unit_t out_delta_abs = unit_signed_abs_unit(out_delta_signed);
 
-    function frac_t out_delta_signed_times(frac_t x);
-        out_delta_signed_times = unit_signed_mul_frac(out_delta_signed, x);
-    endfunction
-
-    function frac_t out_delta_abs_times(frac_t x);
-        out_delta_abs_times = unit_mul_frac(out_delta_abs, x);
-    endfunction
-
     function unit_signed_t out_delta_signed_mul(unit_signed_t x);
         out_delta_signed_mul = unit_signed_mul(out_delta_signed, x);
     endfunction
@@ -55,25 +47,25 @@ module neuron_learn #(
                 if (random_v2[i]) random_v0[i] <= random_v0[i] ^ (^in[i]);
                 else if (random_v0[i] ^ random_v2[i]) random_v0[i] <= random_v0[i] ^ (~^ expected_out);
             end
-            if (random_v0[0]) activation_max <= activation_max + random_v1;
-            if (random_v0[1]) activation_min <= activation_min ^ random_v1;
+            if (random_v0[0]) activation_upper_bound <= activation_upper_bound + random_v1;
+            if (random_v0[1]) activation_lower_bound <= activation_lower_bound ^ random_v1;
             random_v1 <= random_v0 - random_v1;
             random_v2 <= random_v0 + random_v1 - random_v2;
         end else if(learn) begin
-            if (unit_signed_lesser(activation_max, activation_min)) {activation_max, activation_min} <= {activation_min, activation_max};
+            if (unit_signed_lesser(activation_upper_bound, activation_lower_bound)) {activation_upper_bound, activation_lower_bound} <= {activation_lower_bound, activation_upper_bound};
             else begin
                 if (average_too_small && out_delta_postive) begin
-                    activation_min <= unit_signed_sub(activation_min, out_delta_signed_mul(unit_signed_sub(activation_min, average)));
+                    activation_lower_bound <= unit_signed_sub_overflow_to_max_min(activation_lower_bound, out_delta_signed_mul(unit_signed_sub_overflow_to_max_min(activation_lower_bound, average)));
                 end
                 if (average_too_big && out_delta_negative) begin
-                    activation_max <= unit_signed_add(activation_max, out_delta_signed_mul(unit_signed_sub(average, activation_max)));
+                    activation_upper_bound <= unit_signed_add_overflow_to_max_min(activation_upper_bound, out_delta_signed_mul(unit_signed_sub_overflow_to_max_min(average, activation_upper_bound)));
                 end
                 foreach (expected_in[i]) begin
                     if (unit_signed_postive(weights[i])==out_delta_postive) begin
                         expected_in[i] <= unit_add(in[i], unit_mul(out_delta_abs, unit_mul(unit_signed_abs_unit(weights[i]), activation_space)));
-                        weights[i] <= unit_signed_add(weights[i], out_delta_signed_mul(weights[i]));
+                        weights[i] <= unit_signed_add_overflow_to_max_min(weights[i], out_delta_signed_mul(weights[i]));
                     end else begin
-                        weights[i] <= unit_signed_sub(weights[i], out_delta_signed_mul(weights[i]));
+                        weights[i] <= unit_signed_sub_overflow_to_max_min(weights[i], out_delta_signed_mul(weights[i]));
                         expected_in[i] <= unit_sub_overflow_as_min(in[i], unit_mul(out_delta_abs, unit_mul(unit_signed_abs_unit(weights[i]), activation_space)));
                     end
                     // minimize activation_space

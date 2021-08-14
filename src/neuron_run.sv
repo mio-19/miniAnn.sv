@@ -16,13 +16,13 @@ module neuron_run #(
     output unit_t activation_space
 );
 
-    assign activation_space = unit_signed_abs_unit(unit_signed_sub(activation_upper_bound, activation_lower_bound));
+    assign activation_space = unit_signed_abs_unit(unit_signed_sub_overflow_to_max_min(activation_upper_bound, activation_lower_bound));
 
     assign average = frac_to_unit_signed_overflow_to_max_min(frac_signed_div_int(sum, N));
     frac_t sum;
     always_comb begin
         sum = `frac_zero;
-        foreach (in[i]) sum = frac_add(sum, unit_mul_frac(in[i], weights[i]));
+        foreach (in[i]) sum = frac_add(sum, unit_mul_frac(in[i], unit_signed_to_frac(weights[i])));
     end
 
     always_comb begin
