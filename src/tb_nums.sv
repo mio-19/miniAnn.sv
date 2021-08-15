@@ -1,4 +1,5 @@
 `include "defs.svh"
+/* verilator lint_off STMTDLY */
 module tb_nums;
 
     task automatic test_add_frac(frac_t a, frac_t b);
@@ -47,6 +48,19 @@ module tb_nums;
         test_unit_frac(0.1);
         test_unit_frac(0.9);
         test_unit_frac(0.875);
+    end
+
+    unit_t to_be_avg [3:0];
+    unit_t avged;
+    unit_average #(4) unit_average_inst (to_be_avg, avged);
+
+    initial begin
+        $display("unit_average");
+        to_be_avg[0] = unit_from_real(0.1);
+        to_be_avg[1] = unit_from_real(0.3);
+        to_be_avg[2] = unit_from_real(0.6);
+        to_be_avg[3] = unit_from_real(0.9);
+        $display("average of 0.1 0.3 0.6 0.9", avged);
     end
 
 endmodule

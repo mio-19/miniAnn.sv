@@ -178,7 +178,7 @@ function frac_t unit_signed_to_frac(unit_signed_t x);
     unit_signed_to_frac = $signed(x);
 endfunction
 function unit_signed_t frac_to_unit_signed_overflow_to_max_min(frac_t x);
-    frac_to_unit_signed_overflow_to_max_min = (x[`BITS*2-1:`BITS] == 0) ? {1'b0, x[`BITS-1:0]} : (x[`BITS*2-1:`BITS] == ~`BITS'0) ? {1'b1, x[`BITS-1:0]} : x[`BITS*2-1] ? `unit_signed_min : `unit_signed_max;
+    frac_to_unit_signed_overflow_to_max_min = (x[`BITS*2-1:`BITS] == 0) ? {1'b0, x[`BITS-1:0]} : (~x[`BITS*2-1:`BITS] == 0) ? {1'b1, x[`BITS-1:0]} : x[`BITS*2-1] ? `unit_signed_min : `unit_signed_max;
 endfunction
 function unit_signed_t unit_signed_sub_overflow_to_max_min(unit_signed_t x, unit_signed_t y);
     unit_signed_sub_overflow_to_max_min = unit_signed_add_overflow_to_max_min(x, -y);
